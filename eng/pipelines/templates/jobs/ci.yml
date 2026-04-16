@@ -434,6 +434,11 @@ jobs:
         parameters:
           npmrcPath: $(Agent.TempDirectory)/analyze-job/.npmrc
 
+      # Authenticate with Azure Artifacts before TypeSpec generation, as the TypeSpec Java generator's
+      # postprocessor runs 'mvn compile' internally to compile customization classes, which needs
+      # Maven to be authenticated to resolve parent POMs from the Azure Artifacts feed.
+      - template: /eng/pipelines/templates/steps/maven-authenticate.yml
+
       - task: PowerShell@2
         displayName: Verify Swagger and TypeSpec Code Generation
         inputs:
@@ -444,9 +449,6 @@ jobs:
             -RegenerationType 'All'
         env:
           NPM_CONFIG_USERCONFIG: $(Agent.TempDirectory)/analyze-job/.npmrc
-
-      # Authenticate with Azure Artifacts
-      - template: /eng/pipelines/templates/steps/maven-authenticate.yml
 
       - template: /eng/pipelines/templates/steps/run-and-validate-linting.yml
         parameters:

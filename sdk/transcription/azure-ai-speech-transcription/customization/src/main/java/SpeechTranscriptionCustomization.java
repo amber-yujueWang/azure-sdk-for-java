@@ -141,9 +141,8 @@ public class SpeechTranscriptionCustomization extends Customization {
                         // Set the constructor body to initialize enabled = true
                         constructor.setBody(parseBlock("{ this.enabled = true; }"));
                         // Add JavaDoc
-                        constructor.setJavadocComment(
-                            new Javadoc(parseText(
-                                "Creates an instance of EnhancedModeOptions class with enhanced mode automatically enabled.")));
+                        constructor.setJavadocComment(new Javadoc(parseText(
+                            "Creates an instance of EnhancedModeOptions class with enhanced mode automatically enabled.")));
                     });
 
                 // Remove isEnabled() getter to hide enabled from public API
@@ -154,8 +153,7 @@ public class SpeechTranscriptionCustomization extends Customization {
 
                 // Customize toJson() to serialize the enabled field
                 clazz.getMethodsByName("toJson").forEach(method -> {
-                    method.setBody(parseBlock(
-                        "{ jsonWriter.writeStartObject(); "
+                    method.setBody(parseBlock("{ jsonWriter.writeStartObject(); "
                         + "jsonWriter.writeBooleanField(\"enabled\", this.enabled); "
                         + "jsonWriter.writeStringField(\"task\", this.task); "
                         + "jsonWriter.writeStringField(\"targetLanguage\", this.targetLanguage); "
@@ -176,19 +174,20 @@ public class SpeechTranscriptionCustomization extends Customization {
         packageCustomization.getClass("AudioFileDetails").customizeAst(ast -> {
             ast.getClassByName("AudioFileDetails").ifPresent(clazz -> {
                 clazz.getMethodsByName("getFilename").forEach(method -> {
-                    method.setBody(parseBlock(
-                        "{ if (this.filename != null && !this.filename.isEmpty()) { return this.filename; } "
-                        + "if (\"audio/wav\".equalsIgnoreCase(this.contentType)) { return \"audio.wav\"; } "
-                        + "if (\"audio/mpeg\".equalsIgnoreCase(this.contentType) || \"audio/mp3\".equalsIgnoreCase(this.contentType)) { return \"audio.mp3\"; } "
-                        + "if (\"audio/ogg\".equalsIgnoreCase(this.contentType)) { return \"audio.ogg\"; } "
-                        + "if (\"audio/flac\".equalsIgnoreCase(this.contentType)) { return \"audio.flac\"; } "
-                        + "if (\"audio/webm\".equalsIgnoreCase(this.contentType)) { return \"audio.webm\"; } "
-                        + "if (\"audio/opus\".equalsIgnoreCase(this.contentType)) { return \"audio.opus\"; } "
-                        + "return \"audio\"; }"));
-                    method.setJavadocComment(
-                        new Javadoc(parseText("Get the filename property: The filename of the file. "
+                    method.setBody(
+                        parseBlock("{ if (this.filename != null && !this.filename.isEmpty()) { return this.filename; } "
+                            + "if (\"audio/wav\".equalsIgnoreCase(this.contentType)) { return \"audio.wav\"; } "
+                            + "if (\"audio/mpeg\".equalsIgnoreCase(this.contentType) || \"audio/mp3\".equalsIgnoreCase(this.contentType)) { return \"audio.mp3\"; } "
+                            + "if (\"audio/ogg\".equalsIgnoreCase(this.contentType)) { return \"audio.ogg\"; } "
+                            + "if (\"audio/flac\".equalsIgnoreCase(this.contentType)) { return \"audio.flac\"; } "
+                            + "if (\"audio/webm\".equalsIgnoreCase(this.contentType)) { return \"audio.webm\"; } "
+                            + "if (\"audio/opus\".equalsIgnoreCase(this.contentType)) { return \"audio.opus\"; } "
+                            + "return \"audio\"; }"));
+                    method
+                        .setJavadocComment(new Javadoc(parseText("Get the filename property: The filename of the file. "
                             + "If not explicitly set, a filename will be auto-generated from the contentType."))
-                            .addBlockTag("return", "the filename value, or an auto-generated filename if not set."));
+                                .addBlockTag("return",
+                                    "the filename value, or an auto-generated filename if not set."));
                 });
             });
         });
